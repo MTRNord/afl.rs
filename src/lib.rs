@@ -159,8 +159,9 @@ macro_rules! __fuzz {
         $crate::fuzz($hook, |$buf| {
             let $buf: $dty = {
                 use arbitrary::{Arbitrary, Unstructured};
-                if let Ok(d) = Unstructured::new($buf)
-                    .and_then(|mut b| Arbitrary::arbitrary(&mut b).map_err(|_| ""))
+                let mut unstructured = Unstructured::new($buf);
+                
+                if let Ok(d) = Arbitrary::arbitrary(&mut unstructured)
                 {
                     d
                 } else {
